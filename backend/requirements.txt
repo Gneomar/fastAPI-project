@@ -1,0 +1,14 @@
+asyncpg
+psycopg2-binary
+fastapi
+python-dotenv
+sqlalchemy
+sqlmodel
+requests
+pydantic
+uvicorn
+passlib
+bcrypt
+PyJWT
+python-multipart
+pydantic-settings
