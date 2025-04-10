@@ -1,22 +1,21 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlmodel import select
 from src.core.database import get_session
 from src.models.users import User
 from src.schemas.users import UserCreate
-from src.auth.auth import verify_password, hash_password, create_access_token
+from src.auth.auth import AccessTokenBearer, verify_password, create_access_token
+from src.services.auth import UserService
 from fastapi.responses import JSONResponse
 
 auth_router = APIRouter()
+access_scheme = AccessTokenBearer()
+user_service = UserService()
 
 @auth_router.post("/login")
 async def login(user_data: UserCreate, db: AsyncSession = Depends(get_session)):
     """Valida las credenciales y devuelve un token de acceso."""
     
-    query = select(User).where(User.username == user_data.username)
-    result = await db.execute(query)
-    user = result.scalars().first()
-
+    user = await user_service.get_user_by_username(user_data.username, db)
     if not user or not verify_password(user_data.password, user.password_hash):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -33,18 +32,29 @@ async def login(user_data: UserCreate, db: AsyncSession = Depends(get_session)):
         "token_type": "bearer"})
 
 @auth_router.post("/register/")
-async def register_user(user_data: UserCreate, db: AsyncSession = Depends(get_session)):
-    """Crea un nuevo usuario en la base de datos"""
-    existing_user = await db.execute(select(User).where(User.username == user_data.username))
-    
-    if existing_user.scalars().first():
-        raise HTTPException(status_code=400, detail="El usuario ya existe")
+async def register_user(
+    user_data: UserCreate,
+    db: AsyncSession = Depends(get_session),
+    ):
 
-    password_hash = hash_password(user_data.password)
-    new_user = User(username=user_data.username, password_hash=password_hash)
+    user_exist = await user_service.user_exists(user_data.username, db)
+    if user_exist:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="El usuario ya existe",
+        )
     
-    db.add(new_user)
-    await db.commit()
-    await db.refresh(new_user)
+    new_user = await user_service.create_user(user_data, db)
+    return {"message": f"Usuario {new_user.username} creado correctamente"}
 
-    return {"message": "Usuario creado correctamente"}
+
+@auth_router.get("/ruta-protegida")
+def ruta_protegida(
+    token_detail: dict = Depends(access_scheme)
+    ):
+    user = token_detail["user"]
+    return {
+        "mensaje": f"Hola {user['username']}, accediste a una ruta protegida.",
+        "usuario_id": user["uid"],
+        "user_name": user["username"],
+    }

@@ -36,5 +36,6 @@ app.include_router(auth_router, prefix="/auth", tags=["Authentication"])
 async def root():
     return {"message": "Hello World!"}
 
+
 # Enter src path in terminal
 # uvicorn src.main:app --reload --host 0.0.0.0 --port 8000
