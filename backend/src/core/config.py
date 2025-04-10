@@ -20,9 +20,9 @@ class Settings(BaseSettings):
 Config = Settings()
 
 def create_db_url():
-    url = f"postgresql://{Config.POSTGRES_USER}:{Config.POSTGRES_PASSWORD}@{Config.POSTGRES_HOST}:{Config.POSGRES_PORT}/{Config.POSTGRES_DB}"
+    url = f"postgresql+asyncpg://{Config.POSTGRES_USER}:{Config.POSTGRES_PASSWORD}@{Config.POSTGRES_HOST}:{Config.POSGRES_PORT}/{Config.POSTGRES_DB}"
     return url
    
 def create_db_url_external():
-    url = f"postgresql://{Config.POSTGRES_USER_EXTERNAL}:{Config.POSTGRES_PASSWORD_EXTERNAL}@{Config.POSTGRES_HOST_EXTERNAL}:{Config.POSGRES_PORT_EXTERNAL}/{Config.POSTGRES_DB_EXTERNAL}"
+    url = f"postgresql+asyncpg://{Config.POSTGRES_USER_EXTERNAL}:{Config.POSTGRES_PASSWORD_EXTERNAL}@{Config.POSTGRES_HOST_EXTERNAL}:{Config.POSGRES_PORT_EXTERNAL}/{Config.POSTGRES_DB_EXTERNAL}"
     return url
