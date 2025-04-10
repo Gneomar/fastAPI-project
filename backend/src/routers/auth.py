@@ -12,7 +12,10 @@ access_scheme = AccessTokenBearer()
 user_service = UserService()
 
 @auth_router.post("/login")
-async def login(user_data: UserCreate, db: AsyncSession = Depends(get_session)):
+async def login(
+    user_data: UserCreate,
+    db: AsyncSession = Depends(get_session),
+    ):
     """Valida las credenciales y devuelve un token de acceso."""
     
     user = await user_service.get_user_by_username(user_data.username, db)
@@ -50,7 +53,7 @@ async def register_user(
 
 @auth_router.get("/ruta-protegida")
 def ruta_protegida(
-    token_detail: dict = Depends(access_scheme)
+    token_detail: dict = Depends(access_scheme),
     ):
     user = token_detail["user"]
     return {
