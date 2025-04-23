@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta, timezone
 from passlib.context import CryptContext
-from src.core.config import Config
+from core.config import Config
 import logging
 import jwt
 import uuid
@@ -81,5 +81,3 @@ class RefreshTokenBearer(TokenBearer):
     def verify_token_data(self, token_data: dict) -> None:
         if token_data and not token_data["refresh"]:
             raise HTTPException(status_code=401, detail="Refresh token required")
-        
-

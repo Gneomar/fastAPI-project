@@ -1,7 +1,7 @@
 from sqlalchemy.ext.asyncio import AsyncSession
-from src.models.users import User
-from src.schemas.users import UserCreate
-from src.auth.auth import hash_password
+from models.users import User
+from schemas.users import UserCreate
+from auth.auth import hash_password
 from sqlmodel import select
 from fastapi import HTTPException
 

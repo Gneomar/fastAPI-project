@@ -3,7 +3,7 @@ from sqlmodel import SQLModel
 
 from sqlalchemy.ext.asyncio import create_async_engine
 from sqlalchemy.orm import sessionmaker
-from src.core.config import create_db_url, create_db_url_external
+from core.config import create_db_url, create_db_url_external
 
 
 DATABASE_URL = create_db_url()

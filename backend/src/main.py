@@ -1,8 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from src.routers.auth import auth_router
+from routers.auth import auth_router
 
-from src.core.database import init_db
+from core.database import init_db
 from contextlib import asynccontextmanager
 
 @asynccontextmanager
@@ -34,8 +34,8 @@ app.include_router(auth_router, prefix="/auth", tags=["Authentication"])
 
 @app.get("/")
 async def root():
-    return {"message": "Hello World!"}
+    return {"message": "Hello Worlda!!"}
 
 
 # Enter src path in terminal
-# uvicorn src.main:app --reload --host 0.0.0.0 --port 8000
+# uvicorn main:app --reload --host 0.0.0.0 --port 8000

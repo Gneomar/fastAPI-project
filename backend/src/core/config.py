@@ -1,4 +1,7 @@
+from pathlib import Path
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+BASE_DIR = Path(__file__).resolve().parent.parent.parent  # Sube una carpeta
 
 class Settings(BaseSettings):
     POSTGRES_HOST: str
@@ -13,9 +16,11 @@ class Settings(BaseSettings):
     POSTGRES_USER_EXTERNAL: str
     POSTGRES_PASSWORD_EXTERNAL: str
     POSTGRES_DB_EXTERNAL: str
-    POSGRES_PORT_EXTERNAL: str
-
-    model_config = SettingsConfigDict(env_file=".env", extra="ignore")
+    POSTGRES_PORT_EXTERNAL: str
+    model_config = SettingsConfigDict(
+        env_file=BASE_DIR / ".env",
+        extra="ignore"
+    )
 
 Config = Settings()
 
@@ -24,5 +29,5 @@ def create_db_url():
     return url
    
 def create_db_url_external():
-    url = f"postgresql+asyncpg://{Config.POSTGRES_USER_EXTERNAL}:{Config.POSTGRES_PASSWORD_EXTERNAL}@{Config.POSTGRES_HOST_EXTERNAL}:{Config.POSGRES_PORT_EXTERNAL}/{Config.POSTGRES_DB_EXTERNAL}"
+    url = f"postgresql+asyncpg://{Config.POSTGRES_USER_EXTERNAL}:{Config.POSTGRES_PASSWORD_EXTERNAL}@{Config.POSTGRES_HOST_EXTERNAL}:{Config.POSTGRES_PORT_EXTERNAL}/{Config.POSTGRES_DB_EXTERNAL}"
     return url
